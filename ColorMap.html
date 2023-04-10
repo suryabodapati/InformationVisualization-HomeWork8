@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<style>
+  title{
+    font-family: monospace;
+    font-size: larger;
+    
+  }
+</style>
+<body>
+  <svg width="960" height="500"></svg>
+  <title>State-wise Population of India</title>
+
+
+  <script>
+    // Set up the data
+    const data = [
+      {state: 'Andhra Pradesh', population: 49577103},
+      {state: 'Arunachal Pradesh', population: 1383727},
+      {state: 'Assam', population: 31205576},
+      {state: 'Bihar', population: 104099452},
+      {state: 'Chhattisgarh', population: 25545198},
+      {state: 'Goa', population: 1458545},
+      {state: 'Gujarat', population: 60439692},
+      {state: 'Haryana', population: 25351462},
+      {state: 'Himachal Pradesh', population: 6864602},
+      {state: 'Jharkhand', population: 32988134},
+      {state: 'Karnataka', population: 61095297},
+      {state: 'Kerala', population: 33406061},
+      {state: 'Madhya Pradesh', population: 72626809},
+      {state: 'Maharashtra', population: 123144223},
+      {state: 'Manipur', population: 2570390},
+      {state: 'Meghalaya', population: 3366710},
+      {state: 'Mizoram', population: 1239244},
+      {state: 'Nagaland', population: 2249695},
+      {state: 'Odisha', population: 41974219},
+      {state: 'Punjab', population: 27743338},
+      {state: 'Rajasthan', population: 81032689},
+      {state: 'Sikkim', population: 671720},
+      {state: 'Tamil Nadu', population: 77841267},
+      {state: 'Telangana', population: 39362732},
+      {state: 'Tripura', population: 4169794},
+      {state: 'Uttar Pradesh', population: 237882725},
+      {state: 'Uttarakhand', population: 11250858},
+      {state: 'West Bengal', population: 99609303}
+    ];
+
+    // Set up the SVG container and margins
+    const margin = {top:100, right: 20, bottom: 30, left:100};
+    const width = 960 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    const svg = d3.select('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Set up the x and y scales
+    const x = d3.scaleBand()
+      .range([0, width])
+      .padding(0.1)
+      .domain(data.map(d => d.state));
+
+    const y = d3.scaleLinear()
+      .range([height, 0])
+      .domain([0, d3.max(data, d => d.population)]);
+
+    // Set up the color
+    const color = d3.scaleSequential()
+  .interpolator(d3.interpolateBlues)
+  .domain([0, d3.max(data, d => d.population)]);
+
+
+// Create the bars
+svg.selectAll('.bar')
+  .data(data)
+  .enter()
+  .append('rect')
+  .attr('class', 'bar')
+  .attr('x', d => x(d.state))
+  .attr('y', d => y(d.population))
+  .attr('width', x.bandwidth())
+  .attr('height', d => height - y(d.population))
+  .attr('fill', d => color(d.population));
+
+// Add the x-axis
+svg.append('g')
+  .attr('transform', `translate(0,${height})`)
+  .call(d3.axisBottom(x))
+  .selectAll('text')
+  .attr('y', 0)
+  .attr('x', 9)
+  .attr('dy', '.35em')
+  .attr('transform', 'rotate(90)')
+  .style('text-anchor', 'start');
+
+// Add the y-axis
+svg.append('g')
+  .call(d3.axisLeft(y));
+
+// Add the chart title
+svg.append('text')
+  .attr('x', (width / 2))
+  .attr('y', 0 - (margin.top / 2))
+  .attr('text-anchor', 'middle')
+  .style('font-size', '16px')
+  .text('State-wise Population of India');
+</script>
+</body>
+</html>
